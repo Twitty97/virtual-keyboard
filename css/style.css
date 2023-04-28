@@ -1,0 +1,99 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/*  color: rgb(165, 192, 221) */
+
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: rgb(235, 216, 178);
+  color: black;
+}
+
+.container {
+  display: flex;
+  width: 1020px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+.title, 
+.subtitle, 
+.subtitle-lang {
+  color: rgb(101, 78, 146);
+  line-height: 2em;
+  text-align: center;
+}
+
+.keyboard-inputarea, 
+.keyboard-textarea {
+  width: 100%;
+  border-radius: 3px;
+}
+
+.keyboard-textarea {
+  height: 200px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  border: 1px solid rgb(108, 155, 207);
+  resize: none;
+}
+
+.keyboard-inputarea {
+  display: grid;
+  grid-row-gap: 10px;
+  padding: 10px;
+  background-color: rgb(101, 78, 146);
+  height: 250px;
+  position: relative;
+  overflow: hidden;
+}
+
+.keyboard-row {
+  display: grid;
+  grid-gap: 10px;
+  grid-row-gap: 10px;
+  height: 50px;
+  grid-template-columns: repeat(14, 1fr);
+}
+
+.last-row {
+  grid-template-columns: repeat(9, 1fr);
+}
+
+.keyboard-key {
+  display: flex;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+  background: rgb(108, 155, 207) radial-gradient(circle at 0 0, rgba(255, 255, 255, .75), rgba(255, 255, 255, .35));
+}
+
+.letter {
+  font-size: 16px;
+  width: 100%;
+  text-align: center;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
