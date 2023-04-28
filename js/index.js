@@ -1,3 +1,6 @@
+/* eslint-disable import/extensions */
+import keyboardLayout from './keys.js';
+
 const keyboard = {
   elements: {
     mainContainer: null,
@@ -47,7 +50,7 @@ const keyboard = {
     this.elements.mainContainer.appendChild(this.elements.subsubheading);
     this.elements.mainContainer.appendChild(this.elements.textarea);
     this.elements.mainContainer.appendChild(this.elements.keyContainer);
-    for (let i = 0; i < 4; i += 1) {
+    for (let i = 0; i < 5; i += 1) {
       this.elements.keyRow[i] = document.createElement('div');
       this.elements.keyRow[i].classList.add('keyboard-row');
       this.elements.keyContainer.appendChild(this.elements.keyRow[i]);
@@ -56,21 +59,47 @@ const keyboard = {
   },
 
   createKeys() {
-    const fragment = document.createDocumentFragment();
+    const arrayOfRows = [];
+    let k = 0;
+    let j = 0;
+    let z = 0;
+    let keyElement;
+    let keyValue;
+
     const keyLayout = [
       '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Del',
 
       'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 'Backspace',
 
-      'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'enter',
+      'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", '\\', 'Enter',
 
-      'Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'ArrowUp', 'Shift',
+      'Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '▲', 'Shift',
 
-      'Ctrl', 'Win', 'Alt', 'Space', '\\', 'Alt', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'Ctrl',
+      'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
 
     ];
 
-    console.log(keyLayout, fragment);
+    for (let i = 0; i < this.elements.keyRow.length; i += 1) {
+      const style = getComputedStyle(this.elements.keyRow[i]);
+      const template = style.gridTemplateColumns;
+      const len = template.split(' ').length;
+      arrayOfRows.push(len);
+    }
+
+    for (k = 0; k < 5; k += 1) {
+      for (j = 0; j < arrayOfRows[k]; j += 1) {
+        keyElement = document.createElement('div');
+        keyValue = document.createElement('span');
+        keyElement.classList.add('keyboard-key');
+        keyValue.classList.add('letter');
+        keyValue.textContent = `${keyLayout[z]}`;
+        keyElement.appendChild(keyValue);
+        this.elements.keyRow[k].appendChild(keyElement);
+        z += 1;
+      }
+    }
+
+    console.log(keyboardLayout[0][0][0]);
   },
 
   triggerEvent(handlerName) {
