@@ -12,7 +12,7 @@ export default [
     ['Digit0', '0', ')', '0', ')'],
     ['Minus', '-', '_', '-', '_'],
     ['Equal', '=', '+', '=', '+'],
-    ['backspace', 'Backspace', 'Backspace', 'Backspace', 'Backspace'],
+    ['delete', 'Del', 'Del', 'Del', 'Del'],
   ],
   [
     ['tab', 'Tab', 'Tab', 'Tab', 'Tab'],
@@ -28,8 +28,7 @@ export default [
     ['KeyP', 'з', 'З', 'p', 'P'],
     ['BracketLeft', 'х', 'Х', '[', '{'],
     ['BracketRight', 'ъ', 'Ъ', ']', '}'],
-    ['Backslash', '\\', '/', '\\', '|'],
-    ['delete', 'Del', 'Del', 'Del', 'Del'],
+    ['backspace', 'Backspace', 'Backspace', 'Backspace', 'Backspace'],
   ],
   [
     ['caps', 'CapsLock', 'CapsLock', 'CapsLock', 'CapsLock', 'CapsLock'],
@@ -44,6 +43,7 @@ export default [
     ['KeyL', 'д', 'Д', 'l', 'L'],
     ['Semicolon', 'ж', 'Ж', ';', ':'],
     ['Quote', 'э', 'Э', '\'', '\''],
+    ['Backslash', '\\', '/', '\\', '|'],
     ['enter', 'Enter', 'Enter', 'Enter', 'Enter'],
   ],
   [
@@ -64,9 +64,9 @@ export default [
   [
     ['ctrl-left', 'Ctrl', 'Ctrl', 'Ctrl', 'Ctrl'],
     ['MetaLeft', 'Win', 'Win', 'Win', 'Win'],
-    ['AltLeft', 'Alt', 'Alt', 'Alt', 'Alt'],
+    ['alt-left', 'Alt', 'Alt', 'Alt', 'Alt'],
     ['space', ' ', ' ', ' ', ' '],
-    ['AltRight', 'Alt', 'Alt', 'Alt', 'Alt'],
+    ['alt-right', 'Alt', 'Alt', 'Alt', 'Alt'],
     ['ArrowLeft', '◄', '◄', '◄', '◄'],
     ['ArrowDown', '▼', '▼', '▼', '▼'],
     ['ArrowRight', '►', '►', '►', '►'],

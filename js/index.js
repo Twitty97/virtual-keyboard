@@ -62,22 +62,8 @@ const keyboard = {
     const arrayOfRows = [];
     let k = 0;
     let j = 0;
-    let z = 0;
     let keyElement;
     let keyValue;
-
-    const keyLayout = [
-      '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Del',
-
-      'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 'Backspace',
-
-      'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", '\\', 'Enter',
-
-      'Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '▲', 'Shift',
-
-      'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
-
-    ];
 
     for (let i = 0; i < this.elements.keyRow.length; i += 1) {
       const style = getComputedStyle(this.elements.keyRow[i]);
@@ -91,15 +77,13 @@ const keyboard = {
         keyElement = document.createElement('div');
         keyValue = document.createElement('span');
         keyElement.classList.add('keyboard-key');
+        keyElement.classList.add(`${keyboardLayout[k][j][0]}`);
         keyValue.classList.add('letter');
-        keyValue.textContent = `${keyLayout[z]}`;
+        keyValue.textContent = `${keyboardLayout[k][j][3]}`;
         keyElement.appendChild(keyValue);
         this.elements.keyRow[k].appendChild(keyElement);
-        z += 1;
       }
     }
-
-    console.log(keyboardLayout[0][0][0]);
   },
 
   triggerEvent(handlerName) {
