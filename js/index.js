@@ -8,9 +8,9 @@ const keyboard = {
     subheading: null,
     subsubheading: null,
     textarea: null,
-    keyRow: [],
     keyContainer: null,
     keys: [],
+    keyRow: [],
   },
 
   eventHandlers: {
@@ -50,11 +50,9 @@ const keyboard = {
     this.elements.mainContainer.appendChild(this.elements.subsubheading);
     this.elements.mainContainer.appendChild(this.elements.textarea);
     this.elements.mainContainer.appendChild(this.elements.keyContainer);
-    for (let i = 0; i < 5; i += 1) {
-      this.elements.keyRow[i] = document.createElement('div');
-      this.elements.keyRow[i].classList.add('keyboard-row');
-      this.elements.keyContainer.appendChild(this.elements.keyRow[i]);
-    }
+    this.elements.keyContainer.appendChild(this.createKeys());
+    this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key');
+
     document.body.appendChild(this.elements.mainContainer);
   },
 
@@ -63,8 +61,11 @@ const keyboard = {
     let j = 0;
     let keyElement;
     let keyValue;
+    const fragment = document.createDocumentFragment();
 
     for (k = 0; k < keyboardLayout.length; k += 1) {
+      this.elements.keyRow[k] = document.createElement('div');
+      this.elements.keyRow[k].classList.add('keyboard-row');
       for (j = 0; j < keyboardLayout[k].length; j += 1) {
         const key = keyboardLayout[k][j][3];
         keyElement = document.createElement('div');
@@ -117,7 +118,9 @@ const keyboard = {
             break;
         }
       }
+      fragment.appendChild(this.elements.keyRow[k]);
     }
+    return fragment;
   },
 
   triggerEvent(handlerName) {
@@ -125,7 +128,7 @@ const keyboard = {
   },
 
   toggleCapslock() {
-    console.log('Capslock toggled!');
+    this.p.capsLock = !this.p.capsLock;
   },
 };
 
