@@ -63,7 +63,7 @@ export default [
   ],
   [
     ['ctrl-left', 'Ctrl', 'Ctrl', 'Ctrl', 'Ctrl'],
-    ['MetaLeft', 'Win', 'Win', 'Win', 'Win'],
+    ['Meta', 'Win', 'Win', 'Win', 'Win'],
     ['alt-left', 'Alt', 'Alt', 'Alt', 'Alt'],
     ['space', 'space', 'space ', 'space', 'space'],
     ['alt-right', 'Alt', 'Alt', 'Alt', 'Alt'],

@@ -1,5 +1,6 @@
 /* eslint-disable import/extensions */
 import keyboardLayout from './keys.js';
+// import create from './create.js';
 
 const keyboard = {
   elements: {
@@ -15,6 +16,8 @@ const keyboard = {
 
   eventHandlers: {
     oninput: null,
+    onmouseclick: null,
+    onkeyboardclick: null,
   },
 
   p: {
@@ -50,6 +53,8 @@ const keyboard = {
     this.elements.mainContainer.appendChild(this.elements.subsubheading);
     this.elements.mainContainer.appendChild(this.elements.textarea);
     this.elements.mainContainer.appendChild(this.elements.keyContainer);
+
+    // generate keyboard-rows with keys
     this.elements.keyContainer.appendChild(this.createKeys());
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key');
 
@@ -68,10 +73,11 @@ const keyboard = {
       this.elements.keyRow[k].classList.add('keyboard-row');
       for (j = 0; j < keyboardLayout[k].length; j += 1) {
         const key = keyboardLayout[k][j][3];
+        const keyclass = keyboardLayout[k][j][0];
         keyElement = document.createElement('div');
         keyValue = document.createElement('span');
         keyElement.classList.add('keyboard-key');
-        keyElement.classList.add(`${keyboardLayout[k][j][0]}`);
+        keyElement.classList.add(`${keyclass}`);
         keyValue.classList.add('letter');
         keyValue.textContent = `${key}`;
         keyElement.appendChild(keyValue);
@@ -80,6 +86,7 @@ const keyboard = {
           case 'Backspace':
             keyElement.addEventListener('click', () => {
               this.p.value = this.p.value.substring(0, this.p.value.length - 1);
+              console.log(this.p.value);
               this.triggerEvent('oninput');
             });
 
@@ -87,8 +94,7 @@ const keyboard = {
 
           case 'CapsLock':
             keyElement.addEventListener('click', () => {
-              this.toggleCapsLock();
-              this.p.capsLock = true;
+              this.toggleCapslock();
             });
 
             break;
@@ -112,6 +118,7 @@ const keyboard = {
           default:
             keyElement.addEventListener('click', () => {
               this.p.value += this.p.capsLock ? key.toUpperCase() : key.toLowerCase();
+              console.log(this.p.value);
               this.triggerEvent('oninput');
             });
 
@@ -124,12 +131,26 @@ const keyboard = {
   },
 
   triggerEvent(handlerName) {
-    console.log(`Event triggered! Name of the event: ${handlerName}`);
+    if (typeof this.eventHandlers[handlerName] === 'function') {
+      console.log(this.eventHandlers[handlerName](this.p.value));
+    }
   },
 
   toggleCapslock() {
     this.p.capsLock = !this.p.capsLock;
+    const regex = /^[a-zA-ZЁёА-я]$/;
+    const arr = this.elements.keys;
+    for (let n = 0; n < arr.length; n += 1) {
+      if (regex.test(arr[n].textContent)) {
+        if (this.p.capsLock) {
+          arr[n].textContent = arr[n].textContent.toUpperCase();
+        } else {
+          arr[n].textContent = arr[n].textContent.toLowerCase();
+        }
+      }
+    }
   },
+
 };
 
 // initialize the keyboard on DOMContentLoad
@@ -137,3 +158,9 @@ window.addEventListener('DOMContentLoaded', () => {
   keyboard.init();
   keyboard.createKeys();
 });
+
+const s = [];
+document.onkeydown = (event) => {
+  s.push(event.key);
+  console.log(s);
+};
