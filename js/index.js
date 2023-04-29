@@ -17,7 +17,7 @@ const keyboard = {
     oninput: null,
   },
 
-  properties: {
+  p: {
     value: '',
     capsLock: false,
   },
@@ -59,29 +59,63 @@ const keyboard = {
   },
 
   createKeys() {
-    const arrayOfRows = [];
     let k = 0;
     let j = 0;
     let keyElement;
     let keyValue;
 
-    for (let i = 0; i < this.elements.keyRow.length; i += 1) {
-      const style = getComputedStyle(this.elements.keyRow[i]);
-      const template = style.gridTemplateColumns;
-      const len = template.split(' ').length;
-      arrayOfRows.push(len);
-    }
-
-    for (k = 0; k < 5; k += 1) {
-      for (j = 0; j < arrayOfRows[k]; j += 1) {
+    for (k = 0; k < keyboardLayout.length; k += 1) {
+      for (j = 0; j < keyboardLayout[k].length; j += 1) {
+        const key = keyboardLayout[k][j][3];
         keyElement = document.createElement('div');
         keyValue = document.createElement('span');
         keyElement.classList.add('keyboard-key');
         keyElement.classList.add(`${keyboardLayout[k][j][0]}`);
         keyValue.classList.add('letter');
-        keyValue.textContent = `${keyboardLayout[k][j][3]}`;
+        keyValue.textContent = `${key}`;
         keyElement.appendChild(keyValue);
         this.elements.keyRow[k].appendChild(keyElement);
+        switch (key) {
+          case 'Backspace':
+            keyElement.addEventListener('click', () => {
+              this.p.value = this.p.value.substring(0, this.p.value.length - 1);
+              this.triggerEvent('oninput');
+            });
+
+            break;
+
+          case 'CapsLock':
+            keyElement.addEventListener('click', () => {
+              this.toggleCapsLock();
+              this.p.capsLock = true;
+            });
+
+            break;
+
+          case 'Enter':
+            keyElement.addEventListener('click', () => {
+              this.p.value += '\n';
+              this.triggerEvent('oninput');
+            });
+
+            break;
+
+          case 'space':
+            keyElement.addEventListener('click', () => {
+              this.p.value += ' ';
+              this.triggerEvent('oninput');
+            });
+
+            break;
+
+          default:
+            keyElement.addEventListener('click', () => {
+              this.p.value += this.p.capsLock ? key.toUpperCase() : key.toLowerCase();
+              this.triggerEvent('oninput');
+            });
+
+            break;
+        }
       }
     }
   },
