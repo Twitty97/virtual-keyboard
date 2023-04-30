@@ -173,6 +173,50 @@ const keyboard = {
               this.p.value = this.inputFunction(' ');
             });
 
+            document.addEventListener('keydown', (event) => {
+              if (keyClass.match(event.code)) {
+                const findKey = document.querySelector(`.${keyClass}`);
+                findKey.classList.add('activated');
+                this.p.value = this.inputFunction(' ');
+              }
+            });
+
+            document.addEventListener('keyup', (event) => {
+              if (keyClass.match(event.code)) {
+                const findKey = document.querySelector(`.${keyClass}`);
+                findKey.classList.remove('activated');
+              }
+            });
+
+            break;
+
+          case 'ArrowUp':
+          case 'ArrowDown':
+          case 'ArrowLeft':
+          case 'ArrowRight':
+            keyElement.addEventListener('click', () => {
+              this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
+                : this.inputFunction(key.toLowerCase());
+            });
+
+            document.addEventListener('keydown', (event) => {
+              event.preventDefault();
+              if (keyClass.match(event.code)) {
+                const findKey = document.querySelector(`.${keyClass}`);
+                findKey.classList.add('activated');
+                this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
+                  : this.inputFunction(key.toLowerCase());
+              }
+            });
+
+            document.addEventListener('keyup', (event) => {
+              event.preventDefault();
+              if (keyClass.match(event.code)) {
+                const findKey = document.querySelector(`.${keyClass}`);
+                findKey.classList.remove('activated');
+              }
+            });
+
             break;
 
           default:
@@ -188,6 +232,8 @@ const keyboard = {
               if (keyClass.match(event.code)) {
                 const findKey = document.querySelector(`.${keyClass}`);
                 findKey.classList.add('activated');
+                this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
+                  : this.inputFunction(key.toLowerCase());
               }
             });
 

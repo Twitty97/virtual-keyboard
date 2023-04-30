@@ -82,22 +82,15 @@ body {
   box-shadow: inset rgba(0, 0, 0, .75) -1px -1px 2px, inset rgba(255, 255, 255, .9) 1px 1px 2px, rgba(0, 0, 0, .8) 1px 1px 2px -1px;
 }
 
-.active {
-  background: #2cfd72 !important;
-  opacity: 1;
+.activated, 
+.active, 
+.keyboard-key:active {
   border-radius: 30px;
+  background: #2cfd72 !important;
 }
 
 .keyboard-key:hover{
-  background: #2cfd72;
-  opacity: 0.5;
-}
-
-.activated,
-.keyboard-key:active {
-  border-radius: 30px;
-  background: #2cfd72;
-  opacity: 1;
+  background: #c3e6ce;
 }
 
 .letter {
