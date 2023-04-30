@@ -197,6 +197,7 @@ const keyboard = {
 
           default:
             keyElement.addEventListener('click', () => {
+              console.log(key);
               const rexepr = /Ctrl|Alt|Win|Shift/i;
               if (!key.match(rexepr)) {
                 this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
@@ -223,6 +224,14 @@ const keyboard = {
     this.p.capsLock = !this.p.capsLock;
     const regex = /^[a-zA-ZЁёА-я]$/;
     const arr = this.elements.keys;
+    const capsLockButton = document.querySelector('.caps');
+
+    if (capsLockButton.classList.contains('active')) {
+      capsLockButton.classList.remove('active');
+    } else {
+      capsLockButton.classList.add('active');
+    }
+
     for (let n = 0; n < arr.length; n += 1) {
       if (regex.test(arr[n].textContent)) {
         if (this.p.capsLock) {
