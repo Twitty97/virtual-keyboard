@@ -14,11 +14,6 @@ const keyboard = {
     keyRow: [],
   },
 
-  eventHandlers: {
-    oninput: null,
-    onkeyboardclick: null,
-  },
-
   p: {
     value: '',
     capsLock: false,
@@ -65,17 +60,8 @@ const keyboard = {
 
     // apprently querySelector works with static elements only
     this.p.input = document.querySelector('.keyboard-textarea');
-    this.p.input.addEventListener('focus', () => {
-      this.open(this.p.input.value, (currentValue) => {
-        this.p.input.value = currentValue;
-      });
-    });
     this.p.input.addEventListener('blur', () => this.p.input.focus());
-  },
-
-  open(initialValue, oninput) {
-    this.p.value = initialValue || '';
-    this.eventHandlers.oninput = oninput;
+    this.p.input.addEventListener('focus', () => this.p.input.focus());
   },
 
   inputFunction(value) {
@@ -151,7 +137,6 @@ const keyboard = {
           case 'Backspace':
             keyElement.addEventListener('click', () => {
               this.p.value = this.backSpaceFunction();
-              this.triggerEvent('oninput');
             });
 
             break;
@@ -166,7 +151,6 @@ const keyboard = {
           case 'Del':
             keyElement.addEventListener('click', () => {
               this.p.value = this.delFunction();
-              this.triggerEvent('oninput');
             });
 
             break;
@@ -174,7 +158,6 @@ const keyboard = {
           case 'Tab':
             keyElement.addEventListener('click', () => {
               this.p.value = this.inputFunction('    ');
-              this.triggerEvent('oninput');
             });
 
             break;
@@ -182,7 +165,6 @@ const keyboard = {
           case 'Enter':
             keyElement.addEventListener('click', () => {
               this.p.value = this.inputFunction('\n');
-              this.triggerEvent('oninput');
             });
 
             break;
@@ -190,7 +172,6 @@ const keyboard = {
           case 'space':
             keyElement.addEventListener('click', () => {
               this.p.value = this.inputFunction(' ');
-              this.triggerEvent('oninput');
             });
 
             break;
@@ -202,7 +183,6 @@ const keyboard = {
               if (!key.match(rexepr)) {
                 this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
                   : this.inputFunction(key.toLowerCase());
-                this.triggerEvent('oninput');
               }
             });
 
@@ -212,12 +192,6 @@ const keyboard = {
       fragment.appendChild(this.elements.keyRow[k]);
     }
     return fragment;
-  },
-
-  triggerEvent(handlerName) {
-    if (typeof this.eventHandlers[handlerName] === 'function') {
-      this.eventHandlers[handlerName](this.p.value);
-    }
   },
 
   toggleCapslock() {
