@@ -16,13 +16,14 @@ const keyboard = {
 
   eventHandlers: {
     oninput: null,
-    onmouseclick: null,
     onkeyboardclick: null,
   },
 
   p: {
     value: '',
     capsLock: false,
+    cursorPosition: 0,
+    input: null,
   },
 
   init() {
@@ -41,6 +42,8 @@ const keyboard = {
     this.elements.subheading.classList.add('subtitle');
     this.elements.subsubheading.classList.add('subtitle-lang');
     this.elements.textarea.classList.add('keyboard-textarea');
+    this.elements.textarea.setAttribute('autofocus', true);
+    this.elements.textarea.setAttribute('spellcheck', false);
 
     // add text inside the headings
     this.elements.heading.textContent = 'Virtual Keyboard';
@@ -59,6 +62,61 @@ const keyboard = {
     this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key');
 
     document.body.appendChild(this.elements.mainContainer);
+
+    // apprently querySelector works with static elements only
+    this.p.input = document.querySelector('.keyboard-textarea');
+    this.p.input.addEventListener('focus', () => {
+      this.open(this.p.input.value, (currentValue) => {
+        this.p.input.value = currentValue;
+      });
+    });
+    this.p.input.addEventListener('blur', () => this.p.input.focus());
+  },
+
+  open(initialValue, oninput) {
+    this.p.value = initialValue || '';
+    this.eventHandlers.oninput = oninput;
+  },
+
+  inputFunction(value) {
+    const indexStart = this.p.input.selectionStart;
+    const indexEnd = this.p.input.selectionEnd;
+    this.getCursorPosition(value.length);
+    this.p.input.value = (
+      this.p.input.value.slice(0, indexStart)
+      + value
+      + this.p.input.value.slice(indexEnd));
+    this.setCursorPosition(0);
+    return this.p.input.value;
+  },
+
+  backSpaceFunction() {
+    const indexStart = this.p.input.selectionStart;
+    const indexEnd = this.p.input.selectionEnd;
+    console.log(`indexStart: ${indexStart} indexEnd: ${indexEnd}`);
+    this.getCursorPosition(0);
+    console.log(`cursor: ${this.p.cursorPosition}`);
+    console.log(`input.value(start): ${this.p.input.value}`);
+    if (indexStart <= 0) {
+      this.p.input.value = this.p.input.value.slice(0);
+      this.setCursorPosition(0);
+    } else {
+      this.p.input.value = (
+        this.p.input.value.slice(0, indexStart - 1)
+      + this.p.input.value.slice(indexEnd));
+      this.setCursorPosition(-1);
+    }
+    console.log(`selectionStart: ${this.p.input.selectionStart} selectionEnd: ${this.p.input.selectionEnd} cursor: ${this.p.cursorPosition}`);
+    console.log(`input.value (end): ${this.p.input.value}`);
+    return this.p.input.value;
+  },
+
+  getCursorPosition(len) {
+    this.p.cursorPosition = this.p.input.selectionStart + len;
+  },
+  setCursorPosition(len) {
+    this.p.input.selectionStart = this.p.cursorPosition + len;
+    this.p.input.selectionEnd = this.p.cursorPosition + len;
   },
 
   createKeys() {
@@ -82,11 +140,11 @@ const keyboard = {
         keyValue.textContent = `${key}`;
         keyElement.appendChild(keyValue);
         this.elements.keyRow[k].appendChild(keyElement);
+
         switch (key) {
           case 'Backspace':
             keyElement.addEventListener('click', () => {
-              this.p.value = this.p.value.substring(0, this.p.value.length - 1);
-              console.log(this.p.value);
+              this.p.value = this.backSpaceFunction();
               this.triggerEvent('oninput');
             });
 
@@ -99,9 +157,24 @@ const keyboard = {
 
             break;
 
+          case 'Del':
+            keyElement.addEventListener('click', () => {
+              this.triggerEvent('oninput');
+            });
+
+            break;
+
+          case 'Tab':
+            keyElement.addEventListener('click', () => {
+              this.p.value = this.inputFunction('    ');
+              this.triggerEvent('oninput');
+            });
+
+            break;
+
           case 'Enter':
             keyElement.addEventListener('click', () => {
-              this.p.value += '\n';
+              this.p.value = this.inputFunction('\n');
               this.triggerEvent('oninput');
             });
 
@@ -109,7 +182,7 @@ const keyboard = {
 
           case 'space':
             keyElement.addEventListener('click', () => {
-              this.p.value += ' ';
+              this.p.value = this.inputFunction(' ');
               this.triggerEvent('oninput');
             });
 
@@ -117,9 +190,12 @@ const keyboard = {
 
           default:
             keyElement.addEventListener('click', () => {
-              this.p.value += this.p.capsLock ? key.toUpperCase() : key.toLowerCase();
-              console.log(this.p.value);
-              this.triggerEvent('oninput');
+              const rexepr = /Ctrl|Alt|Win|Shift/i;
+              if (!key.match(rexepr)) {
+                this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
+                  : this.inputFunction(key.toLowerCase());
+                this.triggerEvent('oninput');
+              }
             });
 
             break;
@@ -132,7 +208,7 @@ const keyboard = {
 
   triggerEvent(handlerName) {
     if (typeof this.eventHandlers[handlerName] === 'function') {
-      console.log(this.eventHandlers[handlerName](this.p.value));
+      this.eventHandlers[handlerName](this.p.value);
     }
   },
 
@@ -156,11 +232,4 @@ const keyboard = {
 // initialize the keyboard on DOMContentLoad
 window.addEventListener('DOMContentLoaded', () => {
   keyboard.init();
-  keyboard.createKeys();
 });
-
-const s = [];
-document.onkeydown = (event) => {
-  s.push(event.key);
-  console.log(s);
-};
