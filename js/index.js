@@ -17,6 +17,7 @@ const keyboard = {
   p: {
     value: '',
     capsLock: false,
+    shift: false,
     cursorPosition: 0,
     input: null,
   },
@@ -114,8 +115,6 @@ const keyboard = {
   createKeys() {
     let k = 0;
     let j = 0;
-    let keyElement;
-    let keyValue;
     const fragment = document.createDocumentFragment();
 
     for (k = 0; k < keyboardLayout.length; k += 1) {
@@ -123,17 +122,17 @@ const keyboard = {
       this.elements.keyRow[k].classList.add('keyboard-row');
       for (j = 0; j < keyboardLayout[k].length; j += 1) {
         const key = keyboardLayout[k][j][3];
-        const keyclass = keyboardLayout[k][j][0];
-        keyElement = document.createElement('div');
-        keyValue = document.createElement('span');
+        const keyClass = keyboardLayout[k][j][0];
+        const keyElement = document.createElement('div');
+        const keyValue = document.createElement('span');
         keyElement.classList.add('keyboard-key');
-        keyElement.classList.add(`${keyclass}`);
+        keyElement.classList.add(`${keyClass}`);
         keyValue.classList.add('letter');
         keyValue.textContent = `${key}`;
         keyElement.appendChild(keyValue);
         this.elements.keyRow[k].appendChild(keyElement);
 
-        switch (key) {
+        switch (keyClass) {
           case 'Backspace':
             keyElement.addEventListener('click', () => {
               this.p.value = this.backSpaceFunction();
@@ -148,7 +147,7 @@ const keyboard = {
 
             break;
 
-          case 'Del':
+          case 'Delete':
             keyElement.addEventListener('click', () => {
               this.p.value = this.delFunction();
             });
@@ -169,7 +168,7 @@ const keyboard = {
 
             break;
 
-          case 'space':
+          case 'Space':
             keyElement.addEventListener('click', () => {
               this.p.value = this.inputFunction(' ');
             });
@@ -178,11 +177,28 @@ const keyboard = {
 
           default:
             keyElement.addEventListener('click', () => {
-              console.log(key);
-              const rexepr = /Ctrl|Alt|Win|Shift/i;
-              if (!key.match(rexepr)) {
+              const rexepr = /ControlLeft|AltRight|AltLeft|MetaLeft|ShiftLeft|ShiftRight/i;
+              if (!keyClass.match(rexepr)) {
                 this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
                   : this.inputFunction(key.toLowerCase());
+              }
+            });
+
+            document.addEventListener('keydown', (event) => {
+              if (keyClass.match(event.code)) {
+                const findKey = document.querySelector(`.${keyClass}`);
+                if (!findKey.classList.contains('activated')) {
+                  findKey.classList.add('activated');
+                } else {
+                  findKey.classList.remove('activated');
+                }
+              }
+            });
+
+            document.addEventListener('keyup', (event) => {
+              if (keyClass.match(event.code)) {
+                const findKey = document.querySelector(`.${keyClass}`);
+                findKey.classList.remove('activated');
               }
             });
 
@@ -198,7 +214,7 @@ const keyboard = {
     this.p.capsLock = !this.p.capsLock;
     const regex = /^[a-zA-ZЁёА-я]$/;
     const arr = this.elements.keys;
-    const capsLockButton = document.querySelector('.caps');
+    const capsLockButton = document.querySelector('.CapsLock');
 
     if (capsLockButton.classList.contains('active')) {
       capsLockButton.classList.remove('active');

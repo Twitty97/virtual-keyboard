@@ -92,7 +92,8 @@ body {
   background: #2cfd72;
   opacity: 0.5;
 }
- 
+
+.activated,
 .keyboard-key:active {
   border-radius: 30px;
   background: #2cfd72;
@@ -107,53 +108,53 @@ body {
   transform-origin: center;
 }
 
-.backspace,
-.alt-left,
-.alt-right,
-.caps,
-.ctrl-left,
-.ctrl-right,
-.enter,
-.shift-left,
-.shift-right,
-.space,
-.tab, 
-.delete, 
-.Meta {
+.Backspace,
+.AltRight,
+.AltLeft,
+.CapsLock,
+.ControlLeft,
+.ControlRight,
+.Enter,
+.ShiftLeft,
+.ShiftRight,
+.Space,
+.Tab, 
+.Delete, 
+.MetaLeft {
   background: rgb(78, 78, 78) radial-gradient(circle at 0 0, rgba(136, 134, 134, 0.65), rgba(167, 167, 167, 0.35));
 }
 
-.backspace {
+.Backspace {
   width: 110px;
 }
 
-.ctrl-right {
+.ControlRight {
   width: 60px;
 }
 
-.caps {
+.CapsLock {
   width: 86px;
 }
 
-.enter {
+.Enter {
   width: 100px;
 }
 
-.shift-left {
+.ShiftLeft {
   width: 110px;
 }
 
-.shift-right {
+.ShiftRight {
   width: 125px;
 }
 
-.space {
+.Space {
   width: 420px;
 }
 
-.tab,
-.ctrl-left,
-.alt-left, 
-.alt-right {
+.Tab,
+.ControlLeft,
+.AltLeft, 
+.AltRight {
   width: 70px;
 }
