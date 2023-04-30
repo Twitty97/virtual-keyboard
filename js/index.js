@@ -93,10 +93,7 @@ const keyboard = {
   backSpaceFunction() {
     const indexStart = this.p.input.selectionStart;
     const indexEnd = this.p.input.selectionEnd;
-    console.log(`indexStart: ${indexStart} indexEnd: ${indexEnd}`);
     this.getCursorPosition(0);
-    console.log(`cursor: ${this.p.cursorPosition}`);
-    console.log(`input.value(start): ${this.p.input.value}`);
     if (indexStart <= 0) {
       this.p.input.value = this.p.input.value.slice(0);
       this.setCursorPosition(0);
@@ -106,8 +103,17 @@ const keyboard = {
       + this.p.input.value.slice(indexEnd));
       this.setCursorPosition(-1);
     }
-    console.log(`selectionStart: ${this.p.input.selectionStart} selectionEnd: ${this.p.input.selectionEnd} cursor: ${this.p.cursorPosition}`);
-    console.log(`input.value (end): ${this.p.input.value}`);
+    return this.p.input.value;
+  },
+
+  delFunction() {
+    const indexStart = this.p.input.selectionStart;
+    const indexEnd = this.p.input.selectionEnd;
+    this.getCursorPosition(0);
+    this.p.input.value = (
+      this.p.input.value.slice(0, indexEnd)
+      + this.p.input.value.slice(indexStart + 1));
+    this.setCursorPosition(0);
     return this.p.input.value;
   },
 
@@ -159,6 +165,7 @@ const keyboard = {
 
           case 'Del':
             keyElement.addEventListener('click', () => {
+              this.p.value = this.delFunction();
               this.triggerEvent('oninput');
             });
 
