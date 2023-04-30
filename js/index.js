@@ -26,7 +26,7 @@ const keyboard = {
     // create elements
     this.elements.mainContainer = document.createElement('div');
     this.elements.keyContainer = document.createElement('div');
-    this.elements.heading = document.createElement('h2');
+    this.elements.heading = document.createElement('h3');
     this.elements.subheading = document.createElement('h4');
     this.elements.subsubheading = document.createElement('h4');
     this.elements.textarea = document.createElement('textarea');
