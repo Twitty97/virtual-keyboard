@@ -132,124 +132,128 @@ const keyboard = {
         keyElement.appendChild(keyValue);
         this.elements.keyRow[k].appendChild(keyElement);
 
-        switch (keyClass) {
-          case 'Backspace':
-            keyElement.addEventListener('click', () => {
-              this.p.value = this.backSpaceFunction();
-            });
-
-            break;
-
-          case 'CapsLock':
-            keyElement.addEventListener('click', () => {
-              this.toggleCapslock();
-            });
-
-            break;
-
-          case 'Delete':
-            keyElement.addEventListener('click', () => {
-              this.p.value = this.delFunction();
-            });
-
-            break;
-
-          case 'Tab':
-            keyElement.addEventListener('click', () => {
-              this.p.value = this.inputFunction('    ');
-            });
-
-            break;
-
-          case 'Enter':
-            keyElement.addEventListener('click', () => {
-              this.p.value = this.inputFunction('\n');
-            });
-
-            break;
-
-          case 'Space':
-            keyElement.addEventListener('click', () => {
-              this.p.value = this.inputFunction(' ');
-            });
-
-            document.addEventListener('keydown', (event) => {
-              if (keyClass.match(event.code)) {
-                const findKey = document.querySelector(`.${keyClass}`);
-                findKey.classList.add('activated');
-                this.p.value = this.inputFunction(' ');
-              }
-            });
-
-            document.addEventListener('keyup', (event) => {
-              if (keyClass.match(event.code)) {
-                const findKey = document.querySelector(`.${keyClass}`);
-                findKey.classList.remove('activated');
-              }
-            });
-
-            break;
-
-          case 'ArrowUp':
-          case 'ArrowDown':
-          case 'ArrowLeft':
-          case 'ArrowRight':
-            keyElement.addEventListener('click', () => {
-              this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
-                : this.inputFunction(key.toLowerCase());
-            });
-
-            document.addEventListener('keydown', (event) => {
-              event.preventDefault();
-              if (keyClass.match(event.code)) {
-                const findKey = document.querySelector(`.${keyClass}`);
-                findKey.classList.add('activated');
-                this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
-                  : this.inputFunction(key.toLowerCase());
-              }
-            });
-
-            document.addEventListener('keyup', (event) => {
-              event.preventDefault();
-              if (keyClass.match(event.code)) {
-                const findKey = document.querySelector(`.${keyClass}`);
-                findKey.classList.remove('activated');
-              }
-            });
-
-            break;
-
-          default:
-            keyElement.addEventListener('click', () => {
-              const rexepr = /ControlLeft|AltRight|AltLeft|MetaLeft|ShiftLeft|ShiftRight/i;
-              if (!keyClass.match(rexepr)) {
-                this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
-                  : this.inputFunction(key.toLowerCase());
-              }
-            });
-
-            document.addEventListener('keydown', (event) => {
-              if (keyClass.match(event.code)) {
-                const findKey = document.querySelector(`.${keyClass}`);
-                findKey.classList.add('activated');
-                this.p.value = this.p.capsLock ? this.inputFunction(key.toUpperCase())
-                  : this.inputFunction(key.toLowerCase());
-              }
-            });
-
-            document.addEventListener('keyup', (event) => {
-              if (keyClass.match(event.code)) {
-                const findKey = document.querySelector(`.${keyClass}`);
-                findKey.classList.remove('activated');
-              }
-            });
-
-            break;
-        }
+        keyElement.addEventListener('mousedown', (event) => {
+          this.handler(event, keyClass, key);
+        });
+        document.addEventListener('keydown', (event) => {
+          event.preventDefault();
+          if (keyClass === event.code) {
+            this.handler(event, keyClass, key);
+          }
+        });
+        document.addEventListener('keyup', (event) => {
+          event.preventDefault();
+          if (keyClass === event.code) {
+            this.handler(event, keyClass, key);
+          }
+        });
       }
       fragment.appendChild(this.elements.keyRow[k]);
     }
     return fragment;
+  },
+
+  handler(event, k, val) {
+    // console.log(`event: ${event}, keyClass: ${k}`);
+    switch (k) {
+      case 'Backspace':
+        if (event.type === 'mousedown') {
+          this.p.value = this.backSpaceFunction();
+        } else if (event.type === 'keydown') {
+          this.p.value = this.backSpaceFunction();
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.add('activated');
+        } else if (event.type === 'keyup') {
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.remove('activated');
+        }
+        break;
+
+      case 'CapsLock':
+        if (event.type === 'mousedown') {
+          this.toggleCapslock();
+        } else if (event.type === 'keydown') {
+          this.toggleCapslock();
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.add('activated');
+        } else if (event.type === 'keyup') {
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.remove('activated');
+        }
+        break;
+
+      case 'Delete':
+        if (event.type === 'mousedown') {
+          this.p.value = this.delFunction();
+        } else if (event.type === 'keydown') {
+          this.p.value = this.delFunction();
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.add('activated');
+        } else if (event.type === 'keyup') {
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.remove('activated');
+        }
+        break;
+
+      case 'Tab':
+        if (event.type === 'mousedown') {
+          this.p.value = this.inputFunction('    ');
+        } else if (event.type === 'keydown') {
+          this.p.value = this.inputFunction('    ');
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.add('activated');
+        } else if (event.type === 'keyup') {
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.remove('activated');
+        }
+        break;
+
+      case 'Enter':
+        if (event.type === 'mousedown') {
+          this.p.value = this.inputFunction('\n');
+        } else if (event.type === 'keydown') {
+          this.p.value = this.inputFunction('\n');
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.add('activated');
+        } else if (event.type === 'keyup') {
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.remove('activated');
+        }
+        break;
+
+      case 'Space':
+        if (event.type === 'mousedown') {
+          this.p.value = this.inputFunction(' ');
+        } else if (event.type === 'keydown') {
+          this.p.value = this.inputFunction(' ');
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.add('activated');
+        } else if (event.type === 'keyup') {
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.remove('activated');
+        }
+        break;
+
+      default:
+        if (event.type === 'mousedown') {
+          const rexepr = /ControlLeft|ControlRight|AltRight|AltLeft|MetaLeft|ShiftLeft|ShiftRight/i;
+          if (!k.match(rexepr)) {
+            this.p.value = this.p.capsLock ? this.inputFunction(val.toUpperCase())
+              : this.inputFunction(val.toLowerCase());
+          }
+        } else if (event.type === 'keydown') {
+          const rexepr = /ControlLeft|ControlRight|AltRight|AltLeft|MetaLeft|ShiftLeft|ShiftRight/i;
+          if (!k.match(rexepr)) {
+            this.p.value = this.p.capsLock ? this.inputFunction(val.toUpperCase())
+              : this.inputFunction(val.toLowerCase());
+          }
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.add('activated');
+        } else if (event.type === 'keyup') {
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.remove('activated');
+        }
+    }
   },
 
   toggleCapslock() {
