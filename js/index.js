@@ -187,11 +187,7 @@ const keyboard = {
             document.addEventListener('keydown', (event) => {
               if (keyClass.match(event.code)) {
                 const findKey = document.querySelector(`.${keyClass}`);
-                if (!findKey.classList.contains('activated')) {
-                  findKey.classList.add('activated');
-                } else {
-                  findKey.classList.remove('activated');
-                }
+                findKey.classList.add('activated');
               }
             });
 
