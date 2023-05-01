@@ -225,6 +225,8 @@ const keyboard = {
       for (j = 0; j < keyboardLayout[k].length; j += 1) {
         const key = keyboardLayout[k][j][this.p.lang];
         const shiftKey = keyboardLayout[k][j][this.p.shiftIndexKey];
+        const ruKey = keyboardLayout[k][j][1];
+        const shiftRu = keyboardLayout[k][j][2];
         const keyClass = keyboardLayout[k][j][0];
         const keyElement = document.createElement('div');
         const keyValue = document.createElement('span');
@@ -236,21 +238,21 @@ const keyboard = {
         this.elements.keyRow[k].appendChild(keyElement);
 
         keyElement.addEventListener('mousedown', (event) => {
-          this.handler(event, keyClass, key, shiftKey);
+          this.handler(event, keyClass, key, shiftKey, ruKey, shiftRu);
         });
         keyElement.addEventListener('mouseup', (event) => {
-          this.handler(event, keyClass, key, shiftKey);
+          this.handler(event, keyClass, key, shiftKey, ruKey, shiftRu);
         });
         document.addEventListener('keydown', (event) => {
           event.preventDefault();
           if (keyClass === event.code) {
-            this.handler(event, keyClass, key, shiftKey);
+            this.handler(event, keyClass, key, shiftKey, ruKey, shiftRu);
           }
         });
         document.addEventListener('keyup', (event) => {
           event.preventDefault();
           if (keyClass === event.code) {
-            this.handler(event, keyClass, key, shiftKey);
+            this.handler(event, keyClass, key, shiftKey, ruKey, shiftRu);
           }
         });
       }
@@ -258,9 +260,11 @@ const keyboard = {
     }
   },
 
-  handler(event, k, val, shiftVal) {
+  handler(event, k, val, shiftVal, ruKey, shiftRu) {
+    let langKeyValue = val;
+    let langShiftKeyValue = shiftVal;
+
     if (event.altKey && event.ctrlKey) {
-      console.log(`key pressed: ${event.code}`);
       this.toggleCtrlAlt();
     }
     switch (k) {
@@ -370,20 +374,27 @@ const keyboard = {
         break;
 
       default:
+        if (this.p.lang === 3) {
+          langKeyValue = val;
+          langShiftKeyValue = shiftVal;
+        } else if (this.p.lang === 1) {
+          langKeyValue = ruKey;
+          langShiftKeyValue = shiftRu;
+        }
         if (event.type === 'mousedown') {
           const rexepr = /ControlLeft|ControlRight|AltRight|AltLeft|MetaLeft|ShiftLeft|ShiftRight/i;
           const rexeprShift = /^[a-zA-ZЁёА-я]$/;
           if (!k.match(rexepr)) {
             if (this.p.capsLock && !this.p.shiftPressed) {
-              this.p.value = this.inputFunction(val.toUpperCase());
+              this.p.value = this.inputFunction(langKeyValue.toUpperCase());
             } else if (this.p.shiftPressed && !this.p.capsLock) {
-              this.inputFunction(shiftVal);
+              this.inputFunction(langShiftKeyValue);
             } else if (!this.p.shiftPressed && !this.p.capsLock) {
-              this.p.value = this.inputFunction(val.toLowerCase());
+              this.p.value = this.inputFunction(langKeyValue.toLowerCase());
             } else if (this.p.shiftPressed && this.p.capsLock) {
-              if (rexeprShift.test(shiftVal)) {
-                this.inputFunction(shiftVal.toLowerCase());
-              } else { (this.inputFunction(shiftVal)); }
+              if (rexeprShift.test(langShiftKeyValue)) {
+                this.inputFunction(langShiftKeyValue.toLowerCase());
+              } else { (this.inputFunction(langShiftKeyValue)); }
             }
           }
         } else if (event.type === 'keydown') {
@@ -391,15 +402,15 @@ const keyboard = {
           const rexeprShift = /^[a-zA-ZЁёА-я]$/;
           if (!k.match(rexepr)) {
             if (this.p.capsLock && !this.p.shiftPressed) {
-              this.p.value = this.inputFunction(val.toUpperCase());
+              this.p.value = this.inputFunction(langKeyValue.toUpperCase());
             } else if (this.p.shiftPressed && !this.p.capsLock) {
-              this.inputFunction(shiftVal);
+              this.inputFunction(langShiftKeyValue);
             } else if (!this.p.shiftPressed && !this.p.capsLock) {
-              this.p.value = this.inputFunction(val.toLowerCase());
+              this.p.value = this.inputFunction(langKeyValue.toLowerCase());
             } else if (this.p.shiftPressed && this.p.capsLock) {
-              if (rexeprShift.test(shiftVal)) {
-                this.inputFunction(shiftVal.toLowerCase());
-              } else { (this.inputFunction(shiftVal)); }
+              if (rexeprShift.test(langShiftKeyValue)) {
+                this.inputFunction(langShiftKeyValue.toLowerCase());
+              } else { (this.inputFunction(langShiftKeyValue)); }
             }
           }
           const findKey = document.querySelector(`.${k}`);
