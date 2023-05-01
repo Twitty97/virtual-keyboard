@@ -1,6 +1,5 @@
 /* eslint-disable import/extensions */
 import keyboardLayout from './keys.js';
-// import create from './create.js';
 
 const keyboard = {
   elements: {
@@ -17,8 +16,10 @@ const keyboard = {
   p: {
     value: '',
     capsLock: false,
-    shift: false,
     cursorPosition: 0,
+    shiftPressed: false,
+    altPressed: false,
+    lang: 'eng',
     input: null,
   },
 
@@ -52,10 +53,6 @@ const keyboard = {
     this.elements.mainContainer.appendChild(this.elements.subsubheading);
     this.elements.mainContainer.appendChild(this.elements.textarea);
     this.elements.mainContainer.appendChild(this.elements.keyContainer);
-
-    // generate keyboard-rows with keys
-    this.elements.keyContainer.appendChild(this.createKeys());
-    this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key');
 
     document.body.appendChild(this.elements.mainContainer);
 
@@ -104,6 +101,30 @@ const keyboard = {
     return this.p.input.value;
   },
 
+  toggleCapslock() {
+    this.p.capsLock = !this.p.capsLock;
+    const regex = /^[a-zA-ZЁёА-я]$/;
+    this.elements.keys = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key');
+    const arr = this.elements.keys;
+    const capsLockButton = document.querySelector('.CapsLock');
+
+    if (capsLockButton.classList.contains('active')) {
+      capsLockButton.classList.remove('active');
+    } else {
+      capsLockButton.classList.add('active');
+    }
+
+    for (let n = 0; n < arr.length; n += 1) {
+      if (regex.test(arr[n].textContent)) {
+        if (this.p.capsLock) {
+          arr[n].textContent = arr[n].textContent.toUpperCase();
+        } else {
+          arr[n].textContent = arr[n].textContent.toLowerCase();
+        }
+      }
+    }
+  },
+
   getCursorPosition(len) {
     this.p.cursorPosition = this.p.input.selectionStart + len;
   },
@@ -112,10 +133,17 @@ const keyboard = {
     this.p.input.selectionEnd = this.p.cursorPosition + len;
   },
 
+  getKeyboardLanguage() {
+    if (localStorage.getItem('lang') == null) {
+      this.p.lang = 'eng';
+    } else {
+      this.p.lang = localStorage.getItem('lang');
+    }
+  },
+
   createKeys() {
     let k = 0;
     let j = 0;
-    const fragment = document.createDocumentFragment();
 
     for (k = 0; k < keyboardLayout.length; k += 1) {
       this.elements.keyRow[k] = document.createElement('div');
@@ -148,13 +176,11 @@ const keyboard = {
           }
         });
       }
-      fragment.appendChild(this.elements.keyRow[k]);
+      this.elements.keyContainer.appendChild(this.elements.keyRow[k]);
     }
-    return fragment;
   },
 
   handler(event, k, val) {
-    // console.log(`event: ${event}, keyClass: ${k}`);
     switch (k) {
       case 'Backspace':
         if (event.type === 'mousedown') {
@@ -256,32 +282,11 @@ const keyboard = {
     }
   },
 
-  toggleCapslock() {
-    this.p.capsLock = !this.p.capsLock;
-    const regex = /^[a-zA-ZЁёА-я]$/;
-    const arr = this.elements.keys;
-    const capsLockButton = document.querySelector('.CapsLock');
-
-    if (capsLockButton.classList.contains('active')) {
-      capsLockButton.classList.remove('active');
-    } else {
-      capsLockButton.classList.add('active');
-    }
-
-    for (let n = 0; n < arr.length; n += 1) {
-      if (regex.test(arr[n].textContent)) {
-        if (this.p.capsLock) {
-          arr[n].textContent = arr[n].textContent.toUpperCase();
-        } else {
-          arr[n].textContent = arr[n].textContent.toLowerCase();
-        }
-      }
-    }
-  },
-
 };
 
 // initialize the keyboard on DOMContentLoad
 window.addEventListener('DOMContentLoaded', () => {
   keyboard.init();
+  keyboard.createKeys();
+  keyboard.getKeyboardLanguage();
 });
