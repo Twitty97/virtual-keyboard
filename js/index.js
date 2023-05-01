@@ -22,6 +22,7 @@ const keyboard = {
     altPressed: false,
     ctrPressed: false,
     lang: 3,
+    shiftIndexKey: 4,
     input: null,
   },
 
@@ -106,19 +107,50 @@ const keyboard = {
   },
 
   toggleCtrlAlt() {
+    const arrCtrlAlt = [];
     this.p.ctrPressed = !this.p.ctrPressed;
     this.p.altPressed = !this.p.altPressed;
+    const regexpression = /^[a-zA-ZЁёА-я]$/;
     this.elements.letter = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key .letter');
+    const arr = this.elements.letter;
+
+    if (this.p.lang === 3) {
+      this.p.lang = 1;
+    } else if (this.p.lang === 1) {
+      this.p.lang = 3;
+    }
+
+    for (let i = 0; i < keyboardLayout.length; i += 1) {
+      for (let j = 0; j < keyboardLayout[i].length; j += 1) {
+        const contentOnToggle = keyboardLayout[i][j][this.p.lang];
+        arrCtrlAlt.push(contentOnToggle);
+      }
+    }
+
+    for (let i = 0; i < arr.length; i += 1) {
+      if (regexpression.test(arr[i].textContent)) {
+        arr[i].textContent = this.p.capsLock ? arrCtrlAlt[i].toUpperCase()
+          : arrCtrlAlt[i].toLowerCase();
+      }
+    }
   },
 
   toggleShift() {
+    console.log('toggleShift');
     this.elements.letter = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key .letter');
     const arrShift = [];
     const rexeprShift = /^[a-zA-ZЁёА-я]$/;
+
+    if (this.p.lang === 3) {
+      this.p.shiftIndexKey = 4;
+    } else if (this.p.lang === 1) {
+      this.p.shiftIndexKey = 2;
+    }
+
     for (let i = 0; i < keyboardLayout.length; i += 1) {
       for (let l = 0; l < keyboardLayout[i].length; l += 1) {
-        let shiftContent = this.p.shiftPressed ? keyboardLayout[i][l][4]
-          : keyboardLayout[i][l][3];
+        let shiftContent = this.p.shiftPressed ? keyboardLayout[i][l][this.p.shiftIndexKey]
+          : keyboardLayout[i][l][this.p.lang];
         const shiftOnCaps = rexeprShift.test(shiftContent)
           ? shiftContent.toLowerCase() : shiftContent;
         shiftContent = this.p.capsLock ? shiftOnCaps : shiftContent;
@@ -133,7 +165,6 @@ const keyboard = {
     for (let i = 0; i < arrShift.length; i += 1) {
       this.elements.letter[i].textContent = arrShift[i];
     }
-    console.log(`shift: ${this.p.shiftPressed}`);
   },
 
   toggleCapslock() {
@@ -182,12 +213,18 @@ const keyboard = {
     let k = 0;
     let j = 0;
 
+    if (this.p.lang === 3) {
+      this.p.shiftIndexKey = 4;
+    } else if (this.p.lang === 1) {
+      this.p.shiftIndexKey = 2;
+    }
+
     for (k = 0; k < keyboardLayout.length; k += 1) {
       this.elements.keyRow[k] = document.createElement('div');
       this.elements.keyRow[k].classList.add('keyboard-row');
       for (j = 0; j < keyboardLayout[k].length; j += 1) {
         const key = keyboardLayout[k][j][this.p.lang];
-        const shiftKey = keyboardLayout[k][j][4];
+        const shiftKey = keyboardLayout[k][j][this.p.shiftIndexKey];
         const keyClass = keyboardLayout[k][j][0];
         const keyElement = document.createElement('div');
         const keyValue = document.createElement('span');
@@ -222,8 +259,10 @@ const keyboard = {
   },
 
   handler(event, k, val, shiftVal) {
-    // console.log(`capslock: ${this.p.capsLock}`);
-    // console.log(`shift: ${this.p.shiftPressed}`);
+    if (event.altKey && event.ctrlKey) {
+      console.log(`key pressed: ${event.code}`);
+      this.toggleCtrlAlt();
+    }
     switch (k) {
       // case 'ControlLeft':
       //   if (event.type === 'keydown') {
