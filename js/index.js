@@ -27,6 +27,9 @@ const keyboard = {
   },
 
   init() {
+    // retrieve lang from localStorage
+    // this.p.lang = this.getKeyboardLanguage();
+    // console.log(this.p.lang);
     // create elements
     this.elements.mainContainer = document.createElement('div');
     this.elements.keyContainer = document.createElement('div');
@@ -166,6 +169,9 @@ const keyboard = {
     const arr = this.elements.letter;
 
     this.p.lang = (this.p.lang === 3) ? 1 : 3;
+    // localStorage.setItem('lang', this.p.lang);
+    // console.log(this.p.lang);
+    // console.log(this.getKeyboardLanguage());
 
     for (let i = 0; i < keyboardLayout.length; i += 1) {
       for (let j = 0; j < keyboardLayout[i].length; j += 1) {
@@ -179,8 +185,7 @@ const keyboard = {
         arr[i].textContent = this.p.capsLock ? arrCtrlAlt[i].toUpperCase()
           : arrCtrlAlt[i].toLowerCase();
       } else {
-        arr[i].textContent = this.p.capsLock ? arrCtrlAlt[i].toUpperCase()
-          : arrCtrlAlt[i].toLowerCase();
+        arr[i].textContent = arrCtrlAlt[i];
       }
     }
   },
@@ -249,15 +254,15 @@ const keyboard = {
     this.p.input.selectionEnd = this.p.cursorPosition + len;
   },
 
-  // getKeyboardLanguage() {
-  //   let defaultLang = 3;
-  //   if (!localStorage.getItem('lang')) {
-  //     localStorage.setItem('lang', defaultLang);
-  //   } else {
-  //     defaultLang = localStorage.getItem('lang');
-  //   }
-  //   return defaultLang;
-  // },
+  getKeyboardLanguage() {
+    let defaultLang = 3;
+    if (!localStorage.getItem('lang')) {
+      localStorage.setItem('lang', defaultLang);
+    } else {
+      defaultLang = localStorage.getItem('lang');
+    }
+    return defaultLang;
+  },
 
   handler(event, k, val, shiftVal, ruKey, shiftRu) {
     let langKeyValue = val;
