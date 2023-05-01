@@ -27,10 +27,6 @@ const keyboard = {
   },
 
   init() {
-    // retrieve lang from localStorage
-    // this.p.lang = this.getKeyboardLanguage();
-    // console.log(this.p.lang);
-    // create elements
     this.elements.mainContainer = document.createElement('div');
     this.elements.keyContainer = document.createElement('div');
     this.elements.heading = document.createElement('h3');
@@ -84,8 +80,8 @@ const keyboard = {
       this.elements.keyRow[k] = document.createElement('div');
       this.elements.keyRow[k].classList.add('keyboard-row');
       for (j = 0; j < keyboardLayout[k].length; j += 1) {
-        const key = keyboardLayout[k][j][this.p.lang];
-        const shiftKey = keyboardLayout[k][j][this.p.shiftIndexKey];
+        const key = keyboardLayout[k][j][3];
+        const shiftKey = keyboardLayout[k][j][4];
         const ruKey = keyboardLayout[k][j][1];
         const shiftRu = keyboardLayout[k][j][2];
         const keyClass = keyboardLayout[k][j][0];
@@ -169,9 +165,6 @@ const keyboard = {
     const arr = this.elements.letter;
 
     this.p.lang = (this.p.lang === 3) ? 1 : 3;
-    // localStorage.setItem('lang', this.p.lang);
-    // console.log(this.p.lang);
-    // console.log(this.getKeyboardLanguage());
 
     for (let i = 0; i < keyboardLayout.length; i += 1) {
       for (let j = 0; j < keyboardLayout[i].length; j += 1) {
@@ -252,16 +245,6 @@ const keyboard = {
   setCursorPosition(len) {
     this.p.input.selectionStart = this.p.cursorPosition + len;
     this.p.input.selectionEnd = this.p.cursorPosition + len;
-  },
-
-  getKeyboardLanguage() {
-    let defaultLang = 3;
-    if (!localStorage.getItem('lang')) {
-      localStorage.setItem('lang', defaultLang);
-    } else {
-      defaultLang = localStorage.getItem('lang');
-    }
-    return defaultLang;
   },
 
   handler(event, k, val, shiftVal, ruKey, shiftRu) {
