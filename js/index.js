@@ -20,6 +20,7 @@ const keyboard = {
     cursorPosition: 0,
     shiftPressed: false,
     altPressed: false,
+    ctrPressed: false,
     lang: 3,
     input: null,
   },
@@ -104,32 +105,49 @@ const keyboard = {
     return this.p.input.value;
   },
 
+  toggleCtrlAlt() {
+    this.p.ctrPressed = !this.p.ctrPressed;
+    this.p.altPressed = !this.p.altPressed;
+    this.elements.letter = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key .letter');
+  },
+
   toggleShift() {
     this.elements.letter = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key .letter');
     const arrShift = [];
+    const rexeprShift = /^[a-zA-ZЁёА-я]$/;
     for (let i = 0; i < keyboardLayout.length; i += 1) {
       for (let l = 0; l < keyboardLayout[i].length; l += 1) {
-        const shiftContent = this.p.shiftPressed ? keyboardLayout[i][l][4]
+        let shiftContent = this.p.shiftPressed ? keyboardLayout[i][l][4]
           : keyboardLayout[i][l][3];
+        const shiftOnCaps = rexeprShift.test(shiftContent)
+          ? shiftContent.toLowerCase() : shiftContent;
+        shiftContent = this.p.capsLock ? shiftOnCaps : shiftContent;
+        if (!this.p.shiftPressed && this.p.capsLock) {
+          if (rexeprShift.test(shiftContent)) {
+            shiftContent = shiftOnCaps.toUpperCase();
+          }
+        }
         arrShift.push(shiftContent);
       }
     }
     for (let i = 0; i < arrShift.length; i += 1) {
       this.elements.letter[i].textContent = arrShift[i];
     }
+    console.log(`shift: ${this.p.shiftPressed}`);
   },
 
   toggleCapslock() {
     this.p.capsLock = !this.p.capsLock;
+    console.log(`capsLock: ${this.p.capsLock}`);
     const regex = /^[a-zA-ZЁёА-я]$/;
     this.elements.letter = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key .letter');
     const arr = this.elements.letter;
     const capsLockButton = document.querySelector('.CapsLock');
 
-    if (capsLockButton.classList.contains('active')) {
-      capsLockButton.classList.remove('active');
+    if (capsLockButton.classList.contains('activated')) {
+      capsLockButton.classList.remove('activated');
     } else {
-      capsLockButton.classList.add('active');
+      capsLockButton.classList.add('activated');
     }
 
     for (let n = 0; n < arr.length; n += 1) {
@@ -204,7 +222,20 @@ const keyboard = {
   },
 
   handler(event, k, val, shiftVal) {
+    // console.log(`capslock: ${this.p.capsLock}`);
+    // console.log(`shift: ${this.p.shiftPressed}`);
     switch (k) {
+      // case 'ControlLeft':
+      //   if (event.type === 'keydown') {
+      //     this.p.ctrPressed = true;
+      //     const findKey = document.querySelector(`.${k}`);
+      //     findKey.classList.add('activated');
+      //   } else if (event.type === 'keyup') {
+      //     this.p.ctrPressed = false;
+      //     const findKey = document.querySelector(`.${k}`);
+      //     findKey.classList.remove('activated');
+      //   }
+      //   break;
       case 'ShiftRight':
       case 'ShiftLeft':
         if (event.type === 'keydown') {
@@ -244,11 +275,6 @@ const keyboard = {
           this.toggleCapslock();
         } else if (event.type === 'keydown') {
           this.toggleCapslock();
-          const findKey = document.querySelector(`.${k}`);
-          findKey.classList.add('activated');
-        } else if (event.type === 'keyup') {
-          const findKey = document.querySelector(`.${k}`);
-          findKey.classList.remove('activated');
         }
         break;
 
@@ -307,6 +333,7 @@ const keyboard = {
       default:
         if (event.type === 'mousedown') {
           const rexepr = /ControlLeft|ControlRight|AltRight|AltLeft|MetaLeft|ShiftLeft|ShiftRight/i;
+          const rexeprShift = /^[a-zA-ZЁёА-я]$/;
           if (!k.match(rexepr)) {
             if (this.p.capsLock && !this.p.shiftPressed) {
               this.p.value = this.inputFunction(val.toUpperCase());
@@ -315,11 +342,14 @@ const keyboard = {
             } else if (!this.p.shiftPressed && !this.p.capsLock) {
               this.p.value = this.inputFunction(val.toLowerCase());
             } else if (this.p.shiftPressed && this.p.capsLock) {
-              this.inputFunction(shiftVal);
+              if (rexeprShift.test(shiftVal)) {
+                this.inputFunction(shiftVal.toLowerCase());
+              } else { (this.inputFunction(shiftVal)); }
             }
           }
         } else if (event.type === 'keydown') {
           const rexepr = /ControlLeft|ControlRight|AltRight|AltLeft|MetaLeft|ShiftLeft|ShiftRight/i;
+          const rexeprShift = /^[a-zA-ZЁёА-я]$/;
           if (!k.match(rexepr)) {
             if (this.p.capsLock && !this.p.shiftPressed) {
               this.p.value = this.inputFunction(val.toUpperCase());
@@ -328,7 +358,9 @@ const keyboard = {
             } else if (!this.p.shiftPressed && !this.p.capsLock) {
               this.p.value = this.inputFunction(val.toLowerCase());
             } else if (this.p.shiftPressed && this.p.capsLock) {
-              this.inputFunction(shiftVal);
+              if (rexeprShift.test(shiftVal)) {
+                this.inputFunction(shiftVal.toLowerCase());
+              } else { (this.inputFunction(shiftVal)); }
             }
           }
           const findKey = document.querySelector(`.${k}`);
