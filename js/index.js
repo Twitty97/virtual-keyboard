@@ -28,7 +28,6 @@ const keyboard = {
 
   init() {
     this.p.lang = parseInt(this.getKeyboardLang(), 10);
-    console.log(`init: ${this.p.lang}`);
 
     this.elements.mainContainer = document.createElement('div');
     this.elements.keyContainer = document.createElement('div');
