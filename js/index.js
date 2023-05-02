@@ -27,6 +27,9 @@ const keyboard = {
   },
 
   init() {
+    this.p.lang = parseInt(this.getKeyboardLang(), 10);
+    console.log(`init: ${this.p.lang}`);
+
     this.elements.mainContainer = document.createElement('div');
     this.elements.keyContainer = document.createElement('div');
     this.elements.heading = document.createElement('h3');
@@ -66,15 +69,20 @@ const keyboard = {
     this.p.input.addEventListener('focus', () => this.p.input.focus());
   },
 
+  getKeyboardLang() {
+    let defaultLang = 3;
+    if (!localStorage.getItem('lang')) {
+      defaultLang = 3;
+      localStorage.setItem('lang', defaultLang);
+    } else {
+      defaultLang = localStorage.getItem('lang');
+    }
+    return defaultLang;
+  },
+
   createKeys() {
     let k = 0;
     let j = 0;
-
-    if (this.p.lang === 3) {
-      this.p.shiftIndexKey = 4;
-    } else if (this.p.lang === 1) {
-      this.p.shiftIndexKey = 2;
-    }
 
     for (k = 0; k < keyboardLayout.length; k += 1) {
       this.elements.keyRow[k] = document.createElement('div');
@@ -90,7 +98,7 @@ const keyboard = {
         keyElement.classList.add('keyboard-key');
         keyElement.classList.add(`${keyClass}`);
         keyValue.classList.add('letter');
-        keyValue.textContent = `${key}`;
+        keyValue.textContent = (this.p.lang === 3) ? `${key}` : `${ruKey}`;
         keyElement.appendChild(keyValue);
         this.elements.keyRow[k].appendChild(keyElement);
 
@@ -157,28 +165,30 @@ const keyboard = {
   },
 
   toggleCtrlAlt() {
-    const arrCtrlAlt = [];
-    this.p.ctrPressed = !this.p.ctrPressed;
-    this.p.altPressed = !this.p.altPressed;
-    const regexpression = /^[a-zA-ZЁёА-я]$/;
-    this.elements.letter = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key .letter');
-    const arr = this.elements.letter;
+    if (this.p.ctrPressed && this.p.altPressed) {
+      const arrCtrlAlt = [];
+      const regexpression = /^[a-zA-ZЁёА-я]$/;
+      this.elements.letter = this.elements.keyContainer.querySelectorAll('.keyboard-row .keyboard-key .letter');
+      const arr = this.elements.letter;
 
-    this.p.lang = (this.p.lang === 3) ? 1 : 3;
+      this.p.lang = parseInt(this.getKeyboardLang(), 10);
+      this.p.lang = (this.p.lang === 3) ? 1 : 3;
+      localStorage.setItem('lang', this.p.lang);
 
-    for (let i = 0; i < keyboardLayout.length; i += 1) {
-      for (let j = 0; j < keyboardLayout[i].length; j += 1) {
-        const contentOnToggle = keyboardLayout[i][j][this.p.lang];
-        arrCtrlAlt.push(contentOnToggle);
+      for (let i = 0; i < keyboardLayout.length; i += 1) {
+        for (let j = 0; j < keyboardLayout[i].length; j += 1) {
+          const contentOnToggle = keyboardLayout[i][j][this.p.lang];
+          arrCtrlAlt.push(contentOnToggle);
+        }
       }
-    }
 
-    for (let i = 0; i < arr.length; i += 1) {
-      if (regexpression.test(arr[i].textContent)) {
-        arr[i].textContent = this.p.capsLock ? arrCtrlAlt[i].toUpperCase()
-          : arrCtrlAlt[i].toLowerCase();
-      } else {
-        arr[i].textContent = arrCtrlAlt[i];
+      for (let i = 0; i < arr.length; i += 1) {
+        if (regexpression.test(arr[i].textContent)) {
+          arr[i].textContent = this.p.capsLock ? arrCtrlAlt[i].toUpperCase()
+            : arrCtrlAlt[i].toLowerCase();
+        } else {
+          arr[i].textContent = arrCtrlAlt[i];
+        }
       }
     }
   },
@@ -248,13 +258,36 @@ const keyboard = {
   },
 
   handler(event, k, val, shiftVal, ruKey, shiftRu) {
-    let langKeyValue = val;
-    let langShiftKeyValue = shiftVal;
+    this.p.lang = parseInt(this.getKeyboardLang(), 10);
+    const langKeyValue = (this.p.lang === 3) ? val : ruKey;
+    const langShiftKeyValue = (this.p.lang === 3) ? shiftVal : shiftRu;
 
-    if (event.altKey && event.ctrlKey) {
-      this.toggleCtrlAlt();
-    }
     switch (k) {
+      case 'ControlLeft':
+        if (event.type === 'keydown') {
+          this.p.ctrPressed = true;
+          this.toggleCtrlAlt();
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.add('activated');
+        } else if (event.type === 'keyup') {
+          this.p.ctrPressed = false;
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.remove('activated');
+        }
+        break;
+
+      case 'AltLeft':
+        if (event.type === 'keydown') {
+          this.p.altPressed = true;
+          this.toggleCtrlAlt();
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.add('activated');
+        } else if (event.type === 'keyup') {
+          this.p.altPressed = false;
+          const findKey = document.querySelector(`.${k}`);
+          findKey.classList.remove('activated');
+        }
+        break;
       case 'ShiftRight':
       case 'ShiftLeft':
         if (event.type === 'keydown') {
@@ -350,13 +383,6 @@ const keyboard = {
         break;
 
       default:
-        if (this.p.lang === 3) {
-          langKeyValue = val;
-          langShiftKeyValue = shiftVal;
-        } else if (this.p.lang === 1) {
-          langKeyValue = ruKey;
-          langShiftKeyValue = shiftRu;
-        }
         if (event.type === 'mousedown') {
           const rexepr = /ControlLeft|ControlRight|AltRight|AltLeft|MetaLeft|ShiftLeft|ShiftRight/i;
           const rexeprShift = /^[a-zA-ZЁёА-я]$/;
