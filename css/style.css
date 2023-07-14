@@ -1,0 +1,150 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-color: rgb(235, 216, 178);
+  color: black;
+}
+
+.container {
+  display: flex;
+  width: 1020px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+.title,
+.subtitle,
+.subtitle-lang {
+  color: rgb(101, 78, 146);
+  line-height: 26px;
+  text-align: center;
+}
+
+.keyboard-inputarea,
+.keyboard-textarea {
+  border-radius: 3px;
+}
+
+.keyboard-textarea {
+  padding: 15px;
+  height: 160px;
+  width: 100%;
+  font-size: 20px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  border: 1px solid rgb(108, 155, 207);
+  resize: none;
+  color: black;
+}
+
+.keyboard-inputarea {
+  display: grid;
+  grid-row-gap: 10px;
+  padding: 10px;
+  background-color: #2c2c2c;
+  min-height: 250px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #222;
+}
+
+.keyboard-row {
+  display: grid;
+  grid-gap: 10px;
+  grid-row-gap: 10px;
+  height: 50px;
+  grid-template-columns: repeat(14, 1fr);
+}
+
+.keyboard-row:nth-child(4) {
+  grid-template-columns: repeat(13, 1fr);
+}
+
+.keyboard-row:last-child {
+  grid-template-columns: repeat(9, 1fr);
+}
+
+.keyboard-key {
+  display: flex;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.1s ease-out;
+  background: rgb(100, 100, 100) radial-gradient(circle at 0 0, rgba(255, 255, 255, .75), rgba(255, 255, 255, .35));
+  box-shadow: inset rgba(0, 0, 0, .75) -1px -1px 2px, inset rgba(255, 255, 255, .9) 1px 1px 2px, rgba(0, 0, 0, .8) 1px 1px 2px -1px;
+}
+
+.activated, 
+.active, 
+.keyboard-key:active {
+  border-radius: 30px;
+  background: #2cfd72 !important;
+}
+
+.keyboard-key:hover{
+  background: #c3e6ce;
+}
+
+.letter {
+  font-size: 16px;
+  width: 100%;
+  text-align: center;
+  transform: translateX(0);
+  transform-origin: center;
+}
+
+.Backspace,
+.AltRight,
+.AltLeft,
+.CapsLock,
+.ControlLeft,
+.ControlRight,
+.Enter,
+.ShiftLeft,
+.ShiftRight,
+.Space,
+.Tab, 
+.Delete, 
+.MetaLeft {
+  background: rgb(78, 78, 78) radial-gradient(circle at 0 0, rgba(136, 134, 134, 0.65), rgba(167, 167, 167, 0.35));
+}
+
+.Backspace,
+.ShiftLeft {
+  width: 110px;
+}
+
+.ControlRight {
+  width: 60px;
+}
+
+.CapsLock {
+  width: 86px;
+}
+
+.Enter {
+  width: 100px;
+}
+
+.ShiftRight {
+  width: 125px;
+}
+
+.Space {
+  width: 420px;
+}
+
+.Tab,
+.ControlLeft,
+.AltLeft, 
+.AltRight {
+  width: 70px;
+}
